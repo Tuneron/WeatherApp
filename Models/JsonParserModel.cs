@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using WeatherApp.Models.Json;
+using Newtonsoft.Json;
 
 namespace WeatherApp.Models
 {
@@ -11,27 +13,35 @@ namespace WeatherApp.Models
     {
         private string baseUrl;
 
-        private string jsonAnswer;
+        private RootObject rootObject;
         public JsonParserModel ()
         {
             baseUrl = "http://api.apixu.com/v1/forecast.json?key=a224baa42924464ba6e101300182511&q=";
-            jsonAnswer = "";
         }
 
-        public bool CheckForInternetConnection()
+        private bool JsonRequest(string City)
         {
-            try
+            WebClient wc = new WebClient();
+            string json = wc.DownloadString(baseUrl + City);
+            wc.Dispose();
+            if (json != "")
             {
-                using (var client = new WebClient())
-                using (client.OpenRead("http://clients3.google.com/generate_204"))
-                {
-                    return true;
-                }
+                rootObject = JsonConvert.DeserializeObject<RootObject>(json);
+                return true;
             }
-            catch
-            {
+            else
                 return false;
+        }
+
+        public RootObject GetForecast(string city)
+        {
+            if (Program.CheckForInternetConnection())
+            {
+                if (JsonRequest(city))
+                    return rootObject;
             }
+
+            return null;
         }
     }
 }

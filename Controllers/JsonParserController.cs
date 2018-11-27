@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Models;
+using WeatherApp.Models.Json;
 
 namespace WeatherApp.Controllers
 {
@@ -16,12 +17,9 @@ namespace WeatherApp.Controllers
             model = new JsonParserModel();
         }
 
-        public string CheckForInternetConnection()
+        public RootObject GetForecast(string city)
         {
-            if (model.CheckForInternetConnection())
-                return "Connectig succes !";
-            else
-                return "No internet connection";
+            return model.GetForecast(city);
         }
     }
 }
