@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Controllers;
+using WeatherApp.Models.Json;
 using System.Data.SqlClient;
 
 namespace WeatherApp.Models
@@ -21,6 +22,7 @@ namespace WeatherApp.Models
             conncetion.ConnectionString = connectionString;
             command = new SqlCommand();
             command.Connection = conncetion;
+            json = new JsonParserController();
         }
 
         public bool CheckConnection()
@@ -49,6 +51,16 @@ namespace WeatherApp.Models
         public void AddUser(string login, string password, string defaultCity)
         {
 
+        }
+
+        public Current GetCurrentsWeather(string city)
+        {
+            return json.GetForecast(city).current;
+        }
+
+        public Forecast GetWeekWeather(string city)
+        {
+            return json.GetForecast(city).forecast;
         }
 
     }
