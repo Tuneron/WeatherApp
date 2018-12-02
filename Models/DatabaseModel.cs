@@ -63,5 +63,10 @@ namespace WeatherApp.Models
             return json.GetForecast(city).forecast;
         }
 
+        public Location GetCurrentLocation(string city)
+        {
+            return json.GetForecast(city).location;
+        }
+
     }
 }

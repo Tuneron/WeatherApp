@@ -41,5 +41,10 @@ namespace WeatherApp.Controllers
         {
             return databaseModel.GetWeekWeather(city).forecastday;
         }
+
+        public Location GetCurrentLocation(string city)
+        {
+            return databaseModel.GetCurrentLocation(city);
+        }
     }
 }

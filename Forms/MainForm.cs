@@ -25,14 +25,25 @@ namespace WeatherApp
         public MainForm()
         {
             InitializeComponent();
+
             database = new DatabaseController("Data Source=.\\SQLEXPRESS01; Initial Catalog = BlogDatabase; Integrated Security = True; Pooling=False");
+
             UpdateInternetConnectionStatus();
             UpdateDatabaseConnectionStatus();
-            TodayForecastPicture.ImageLocation = "C:/Users/Alex/source/repos/WeatherApp/WeatherApp/Resources/UnknownWheather.jpg";
-            TodayForecastPicture.Load("http:" + database.GetCurrentWeather("Odesa").condition.icon);
-            TodayForecastPicture.SizeMode = PictureBoxSizeMode.StretchImage;
-            UpdateCurrentWeather("Odesa");
-            UpdateForecastWeek("Odesa");
+
+            comboBoxUserCities.Items.Add("Odesa");
+            comboBoxUserCities.Items.Add("Paris");
+            comboBoxUserCities.Items.Add("Moscow");
+            comboBoxUserCities.Text = "Odesa";
+
+            UpdateCurrentWeather(GetForecastRequest());
+            UpdateForecastWeek(GetForecastRequest());
+            UpdateCurrentForecastLocation(GetForecastRequest());
+        }
+
+        private string GetForecastRequest()
+        {
+            return comboBoxUserCities.Text + " " + comboBoxUserRegions.Text + " " + comboBoxUserCountries.Text;
         }
 
         private bool UpdateInternetConnectionStatus()
@@ -43,12 +54,10 @@ namespace WeatherApp
                 this.labelConnectionInternet.ForeColor = System.Drawing.Color.Green;
                 return true;
             }
-            else
-            {
-                this.labelConnectionInternet.Text = "Internet x";
-                this.labelConnectionInternet.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
+
+            this.labelConnectionInternet.Text = "Internet x";
+            this.labelConnectionInternet.ForeColor = System.Drawing.Color.Red;
+            return false;
         }
 
         private bool UpdateDatabaseConnectionStatus()
@@ -59,17 +68,16 @@ namespace WeatherApp
                 this.labelConnectionDatabase.ForeColor = System.Drawing.Color.Green;
                 return true;
             }
-            else
-            {
-                this.labelConnectionDatabase.Text = "Database x";
-                this.labelConnectionDatabase.ForeColor = System.Drawing.Color.Red;
-                return false;
-            }
+
+            this.labelConnectionDatabase.Text = "Database x";
+            this.labelConnectionDatabase.ForeColor = System.Drawing.Color.Red;
+            return false;
         }
 
         private void UpdateCurrentWeather(string city)
         {
-            LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 10);
+            TodayForecastPicture.Load("http:" + database.GetCurrentWeather(city).condition.icon);
+            LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
             LabelCurrentTempValue.Text = database.GetCurrentWeather(city).temp_c + " ℃";
             LabelCurrentWindValue.Text = database.GetCurrentWeather(city).wind_kph.ToString() + " km/h";
             LabelCurrentWindDirValue.Text = database.GetCurrentWeather(city).wind_dir;
@@ -81,9 +89,9 @@ namespace WeatherApp
         {
             List<Control> c = Controls.OfType<GroupBox>().Cast<Control>().ToList();
 
-            c[dayCount].Controls[0].Text = date;
-            c[dayCount].Controls[1].Text = day.avgtemp_c.ToString() + " ℃";
-            c[dayCount].Controls[2].Text = day.avgvis_km.ToString() + " km/h";
+            ((Label)c[dayCount].Controls[0]).Text = date;
+            ((Label)c[dayCount].Controls[1]).Text = day.avgtemp_c.ToString() + " ℃";
+            ((Label)c[dayCount].Controls[2]).Text = day.avgvis_km.ToString() + " km/h";
             ((PictureBox)c[dayCount].Controls[3]).Load("http:" + day.condition.icon);
         }
 
@@ -94,6 +102,57 @@ namespace WeatherApp
                     UpdateForecastDay(i - 1, database.GetWeekForecast(city)[i].date,
                         database.GetWeekForecast(city)[i].day);
             }
+        }
+
+        private void UpdateCurrentForecastLocation(string city)
+        {
+            LabelCurrentForecastCityValue.Text = database.GetCurrentLocation(city).name;
+            LabelCurrentForecastRegionValue.Text = database.GetCurrentLocation(city).region;
+            LabelCurrentForecastCountryValue.Text = database.GetCurrentLocation(city).country;
+        }
+
+        private void buttonGetForecast_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest());
+            UpdateForecastWeek(GetForecastRequest());
+            UpdateCurrentForecastLocation(GetForecastRequest());
+            this.Refresh();
+        }
+
+        private void buttonAddCity_Click(object sender, EventArgs e)
+        {
+            comboBoxUserCities.Items.Add(comboBoxUserCities.Text);
+            comboBoxUserCities.Refresh();
+        }
+
+        private void buttonDeleteCity_Click(object sender, EventArgs e)
+        {
+            comboBoxUserCities.Items.Remove(comboBoxUserCities.SelectedItem);
+            comboBoxUserCities.Refresh();
+        }
+
+        private void buttonAddCountry_Click(object sender, EventArgs e)
+        {
+            comboBoxUserCountries.Items.Add(comboBoxUserCountries.Text);
+            comboBoxUserCountries.Refresh();
+        }
+
+        private void buttonDeleteCountry_Click(object sender, EventArgs e)
+        {
+            comboBoxUserCountries.Items.Remove(comboBoxUserCountries.SelectedItem);
+            comboBoxUserCountries.Refresh();
+        }
+
+        private void buttonAddRegion_Click(object sender, EventArgs e)
+        {
+            comboBoxUserRegions.Items.Add(comboBoxUserRegions.Text);
+            comboBoxUserRegions.Refresh();
+        }
+
+        private void buttonDeleteRegion_Click(object sender, EventArgs e)
+        {
+            comboBoxUserRegions.Items.Remove(comboBoxUserRegions.SelectedItem);
+            comboBoxUserRegions.Refresh();
         }
     }
 }

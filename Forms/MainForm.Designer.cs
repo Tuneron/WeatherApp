@@ -32,6 +32,8 @@
             this.labelConnectionInternet = new System.Windows.Forms.Label();
             this.labelConnectionDatabase = new System.Windows.Forms.Label();
             this.ControllPanel = new System.Windows.Forms.GroupBox();
+            this.buttonAddCity = new System.Windows.Forms.Button();
+            this.comboBoxUserCities = new System.Windows.Forms.ComboBox();
             this.TodayForecast = new System.Windows.Forms.GroupBox();
             this.LabelCurrentPressureValue = new System.Windows.Forms.Label();
             this.LabelCurrentPressure = new System.Windows.Forms.Label();
@@ -94,6 +96,22 @@
             this.LabelDay3Date = new System.Windows.Forms.Label();
             this.LabelDay3Temp = new System.Windows.Forms.Label();
             this.LabelDay3Wind = new System.Windows.Forms.Label();
+            this.buttonDeleteCity = new System.Windows.Forms.Button();
+            this.buttonGetForecast = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.LabelCItySearh = new System.Windows.Forms.Label();
+            this.LabelCountrySearch = new System.Windows.Forms.Label();
+            this.buttonDeleteCountry = new System.Windows.Forms.Button();
+            this.buttonAddCountry = new System.Windows.Forms.Button();
+            this.comboBoxUserCountries = new System.Windows.Forms.ComboBox();
+            this.LabelRegionSearch = new System.Windows.Forms.Label();
+            this.buttonDeleteRegion = new System.Windows.Forms.Button();
+            this.buttonAddRegion = new System.Windows.Forms.Button();
+            this.comboBoxUserRegions = new System.Windows.Forms.ComboBox();
+            this.LabelCurrentForecastLocation = new System.Windows.Forms.Label();
+            this.LabelCurrentForecastCityValue = new System.Windows.Forms.Label();
+            this.LabelCurrentForecastRegionValue = new System.Windows.Forms.Label();
+            this.LabelCurrentForecastCountryValue = new System.Windows.Forms.Label();
             this.ControllPanel.SuspendLayout();
             this.TodayForecast.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.TodayForecastPicture)).BeginInit();
@@ -114,37 +132,73 @@
             // labelConnectionInternet
             // 
             this.labelConnectionInternet.AutoSize = true;
-            this.labelConnectionInternet.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelConnectionInternet.Location = new System.Drawing.Point(6, 16);
+            this.labelConnectionInternet.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelConnectionInternet.Location = new System.Drawing.Point(6, 11);
             this.labelConnectionInternet.Name = "labelConnectionInternet";
-            this.labelConnectionInternet.Size = new System.Drawing.Size(76, 18);
+            this.labelConnectionInternet.Size = new System.Drawing.Size(61, 15);
             this.labelConnectionInternet.TabIndex = 0;
             this.labelConnectionInternet.Text = "Connect...";
             // 
             // labelConnectionDatabase
             // 
             this.labelConnectionDatabase.AutoSize = true;
-            this.labelConnectionDatabase.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelConnectionDatabase.Location = new System.Drawing.Point(6, 34);
+            this.labelConnectionDatabase.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelConnectionDatabase.Location = new System.Drawing.Point(6, 29);
             this.labelConnectionDatabase.Name = "labelConnectionDatabase";
-            this.labelConnectionDatabase.Size = new System.Drawing.Size(76, 18);
+            this.labelConnectionDatabase.Size = new System.Drawing.Size(61, 15);
             this.labelConnectionDatabase.TabIndex = 1;
             this.labelConnectionDatabase.Text = "Connect...";
             // 
             // ControllPanel
             // 
             this.ControllPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.ControllPanel.Controls.Add(this.LabelCurrentForecastCountryValue);
+            this.ControllPanel.Controls.Add(this.LabelCurrentForecastRegionValue);
+            this.ControllPanel.Controls.Add(this.LabelCurrentForecastCityValue);
+            this.ControllPanel.Controls.Add(this.LabelCurrentForecastLocation);
+            this.ControllPanel.Controls.Add(this.LabelRegionSearch);
+            this.ControllPanel.Controls.Add(this.buttonDeleteRegion);
+            this.ControllPanel.Controls.Add(this.buttonAddRegion);
+            this.ControllPanel.Controls.Add(this.comboBoxUserRegions);
+            this.ControllPanel.Controls.Add(this.LabelCountrySearch);
+            this.ControllPanel.Controls.Add(this.buttonDeleteCountry);
+            this.ControllPanel.Controls.Add(this.buttonAddCountry);
+            this.ControllPanel.Controls.Add(this.comboBoxUserCountries);
+            this.ControllPanel.Controls.Add(this.LabelCItySearh);
+            this.ControllPanel.Controls.Add(this.buttonGetForecast);
+            this.ControllPanel.Controls.Add(this.buttonDeleteCity);
+            this.ControllPanel.Controls.Add(this.buttonAddCity);
+            this.ControllPanel.Controls.Add(this.comboBoxUserCities);
             this.ControllPanel.Controls.Add(this.labelConnectionInternet);
             this.ControllPanel.Controls.Add(this.labelConnectionDatabase);
             this.ControllPanel.Location = new System.Drawing.Point(12, 12);
             this.ControllPanel.Name = "ControllPanel";
-            this.ControllPanel.Size = new System.Drawing.Size(673, 58);
+            this.ControllPanel.Size = new System.Drawing.Size(673, 83);
             this.ControllPanel.TabIndex = 2;
             this.ControllPanel.TabStop = false;
             this.ControllPanel.Text = "Controll";
             // 
+            // buttonAddCity
+            // 
+            this.buttonAddCity.Location = new System.Drawing.Point(252, 10);
+            this.buttonAddCity.Name = "buttonAddCity";
+            this.buttonAddCity.Size = new System.Drawing.Size(55, 23);
+            this.buttonAddCity.TabIndex = 3;
+            this.buttonAddCity.Text = "Add";
+            this.buttonAddCity.UseVisualStyleBackColor = true;
+            this.buttonAddCity.Click += new System.EventHandler(this.buttonAddCity_Click);
+            // 
+            // comboBoxUserCities
+            // 
+            this.comboBoxUserCities.FormattingEnabled = true;
+            this.comboBoxUserCities.Location = new System.Drawing.Point(252, 57);
+            this.comboBoxUserCities.Name = "comboBoxUserCities";
+            this.comboBoxUserCities.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxUserCities.TabIndex = 2;
+            // 
             // TodayForecast
             // 
+            this.TodayForecast.Controls.Add(this.button2);
             this.TodayForecast.Controls.Add(this.LabelCurrentPressureValue);
             this.TodayForecast.Controls.Add(this.LabelCurrentPressure);
             this.TodayForecast.Controls.Add(this.LabelCurrentHymidityValue);
@@ -158,11 +212,12 @@
             this.TodayForecast.Controls.Add(this.LabelCurrentWind);
             this.TodayForecast.Controls.Add(this.LabelCurrentTemp);
             this.TodayForecast.Controls.Add(this.TodayForecastPicture);
-            this.TodayForecast.Location = new System.Drawing.Point(12, 76);
+            this.TodayForecast.Location = new System.Drawing.Point(12, 101);
             this.TodayForecast.Name = "TodayForecast";
             this.TodayForecast.Size = new System.Drawing.Size(173, 300);
             this.TodayForecast.TabIndex = 3;
             this.TodayForecast.TabStop = false;
+            this.TodayForecast.Text = "Current";
             // 
             // LabelCurrentPressureValue
             // 
@@ -277,6 +332,7 @@
             this.TodayForecastPicture.Location = new System.Drawing.Point(9, 16);
             this.TodayForecastPicture.Name = "TodayForecastPicture";
             this.TodayForecastPicture.Size = new System.Drawing.Size(92, 92);
+            this.TodayForecastPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.TodayForecastPicture.TabIndex = 0;
             this.TodayForecastPicture.TabStop = false;
             // 
@@ -289,7 +345,7 @@
             this.SlotDay1.Controls.Add(this.LabelDay1Temp);
             this.SlotDay1.Controls.Add(this.LabelDay1Wind);
             this.SlotDay1.Controls.Add(this.LabelDay1Date);
-            this.SlotDay1.Location = new System.Drawing.Point(191, 76);
+            this.SlotDay1.Location = new System.Drawing.Point(191, 101);
             this.SlotDay1.Name = "SlotDay1";
             this.SlotDay1.Size = new System.Drawing.Size(240, 90);
             this.SlotDay1.TabIndex = 4;
@@ -366,7 +422,7 @@
             this.SlotDay4.Controls.Add(this.LabelDay4Date);
             this.SlotDay4.Controls.Add(this.LabelDay4Temp);
             this.SlotDay4.Controls.Add(this.LabelDay4Wind);
-            this.SlotDay4.Location = new System.Drawing.Point(445, 76);
+            this.SlotDay4.Location = new System.Drawing.Point(445, 101);
             this.SlotDay4.Name = "SlotDay4";
             this.SlotDay4.Size = new System.Drawing.Size(240, 90);
             this.SlotDay4.TabIndex = 5;
@@ -443,7 +499,7 @@
             this.SlotDay5.Controls.Add(this.LabelDay5Date);
             this.SlotDay5.Controls.Add(this.LabelDay5Temp);
             this.SlotDay5.Controls.Add(this.LabelDay5Wind);
-            this.SlotDay5.Location = new System.Drawing.Point(445, 181);
+            this.SlotDay5.Location = new System.Drawing.Point(445, 206);
             this.SlotDay5.Name = "SlotDay5";
             this.SlotDay5.Size = new System.Drawing.Size(240, 90);
             this.SlotDay5.TabIndex = 6;
@@ -520,7 +576,7 @@
             this.SlotDay6.Controls.Add(this.LabelDay6Date);
             this.SlotDay6.Controls.Add(this.LabelDay6Temp);
             this.SlotDay6.Controls.Add(this.LabelDay6Wind);
-            this.SlotDay6.Location = new System.Drawing.Point(445, 286);
+            this.SlotDay6.Location = new System.Drawing.Point(445, 311);
             this.SlotDay6.Name = "SlotDay6";
             this.SlotDay6.Size = new System.Drawing.Size(240, 90);
             this.SlotDay6.TabIndex = 6;
@@ -597,7 +653,7 @@
             this.SlotDay2.Controls.Add(this.LabelDay2Date);
             this.SlotDay2.Controls.Add(this.LabelDay2Temp);
             this.SlotDay2.Controls.Add(this.LabelDay2Wind);
-            this.SlotDay2.Location = new System.Drawing.Point(191, 181);
+            this.SlotDay2.Location = new System.Drawing.Point(191, 206);
             this.SlotDay2.Name = "SlotDay2";
             this.SlotDay2.Size = new System.Drawing.Size(240, 90);
             this.SlotDay2.TabIndex = 5;
@@ -674,7 +730,7 @@
             this.SlotDay3.Controls.Add(this.LabelDay3Date);
             this.SlotDay3.Controls.Add(this.LabelDay3Temp);
             this.SlotDay3.Controls.Add(this.LabelDay3Wind);
-            this.SlotDay3.Location = new System.Drawing.Point(191, 286);
+            this.SlotDay3.Location = new System.Drawing.Point(191, 311);
             this.SlotDay3.Name = "SlotDay3";
             this.SlotDay3.Size = new System.Drawing.Size(240, 90);
             this.SlotDay3.TabIndex = 5;
@@ -742,11 +798,172 @@
             this.LabelDay3Wind.TabIndex = 24;
             this.LabelDay3Wind.Text = "Wind :";
             // 
+            // buttonDeleteCity
+            // 
+            this.buttonDeleteCity.Location = new System.Drawing.Point(318, 10);
+            this.buttonDeleteCity.Name = "buttonDeleteCity";
+            this.buttonDeleteCity.Size = new System.Drawing.Size(55, 23);
+            this.buttonDeleteCity.TabIndex = 4;
+            this.buttonDeleteCity.Text = "Del";
+            this.buttonDeleteCity.UseVisualStyleBackColor = true;
+            this.buttonDeleteCity.Click += new System.EventHandler(this.buttonDeleteCity_Click);
+            // 
+            // buttonGetForecast
+            // 
+            this.buttonGetForecast.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.buttonGetForecast.Location = new System.Drawing.Point(633, 10);
+            this.buttonGetForecast.Name = "buttonGetForecast";
+            this.buttonGetForecast.Size = new System.Drawing.Size(34, 69);
+            this.buttonGetForecast.TabIndex = 5;
+            this.buttonGetForecast.Text = "Get";
+            this.buttonGetForecast.UseVisualStyleBackColor = true;
+            this.buttonGetForecast.Click += new System.EventHandler(this.buttonGetForecast_Click);
+            // 
+            // button2
+            // 
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.Location = new System.Drawing.Point(143, 270);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(24, 24);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "↺";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // LabelCItySearh
+            // 
+            this.LabelCItySearh.AutoSize = true;
+            this.LabelCItySearh.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCItySearh.Location = new System.Drawing.Point(252, 36);
+            this.LabelCItySearh.Name = "LabelCItySearh";
+            this.LabelCItySearh.Size = new System.Drawing.Size(31, 17);
+            this.LabelCItySearh.TabIndex = 6;
+            this.LabelCItySearh.Text = "City";
+            // 
+            // LabelCountrySearch
+            // 
+            this.LabelCountrySearch.AutoSize = true;
+            this.LabelCountrySearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCountrySearch.Location = new System.Drawing.Point(506, 36);
+            this.LabelCountrySearch.Name = "LabelCountrySearch";
+            this.LabelCountrySearch.Size = new System.Drawing.Size(57, 17);
+            this.LabelCountrySearch.TabIndex = 10;
+            this.LabelCountrySearch.Text = "Country";
+            // 
+            // buttonDeleteCountry
+            // 
+            this.buttonDeleteCountry.Location = new System.Drawing.Point(572, 10);
+            this.buttonDeleteCountry.Name = "buttonDeleteCountry";
+            this.buttonDeleteCountry.Size = new System.Drawing.Size(55, 23);
+            this.buttonDeleteCountry.TabIndex = 9;
+            this.buttonDeleteCountry.Text = "Del";
+            this.buttonDeleteCountry.UseVisualStyleBackColor = true;
+            this.buttonDeleteCountry.Click += new System.EventHandler(this.buttonDeleteCountry_Click);
+            // 
+            // buttonAddCountry
+            // 
+            this.buttonAddCountry.Location = new System.Drawing.Point(506, 10);
+            this.buttonAddCountry.Name = "buttonAddCountry";
+            this.buttonAddCountry.Size = new System.Drawing.Size(55, 23);
+            this.buttonAddCountry.TabIndex = 8;
+            this.buttonAddCountry.Text = "Add";
+            this.buttonAddCountry.UseVisualStyleBackColor = true;
+            this.buttonAddCountry.Click += new System.EventHandler(this.buttonAddCountry_Click);
+            // 
+            // comboBoxUserCountries
+            // 
+            this.comboBoxUserCountries.FormattingEnabled = true;
+            this.comboBoxUserCountries.Location = new System.Drawing.Point(506, 57);
+            this.comboBoxUserCountries.Name = "comboBoxUserCountries";
+            this.comboBoxUserCountries.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxUserCountries.TabIndex = 7;
+            // 
+            // LabelRegionSearch
+            // 
+            this.LabelRegionSearch.AutoSize = true;
+            this.LabelRegionSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelRegionSearch.Location = new System.Drawing.Point(379, 36);
+            this.LabelRegionSearch.Name = "LabelRegionSearch";
+            this.LabelRegionSearch.Size = new System.Drawing.Size(53, 17);
+            this.LabelRegionSearch.TabIndex = 14;
+            this.LabelRegionSearch.Text = "Region";
+            // 
+            // buttonDeleteRegion
+            // 
+            this.buttonDeleteRegion.Location = new System.Drawing.Point(445, 10);
+            this.buttonDeleteRegion.Name = "buttonDeleteRegion";
+            this.buttonDeleteRegion.Size = new System.Drawing.Size(55, 23);
+            this.buttonDeleteRegion.TabIndex = 13;
+            this.buttonDeleteRegion.Text = "Del";
+            this.buttonDeleteRegion.UseVisualStyleBackColor = true;
+            this.buttonDeleteRegion.Click += new System.EventHandler(this.buttonDeleteRegion_Click);
+            // 
+            // buttonAddRegion
+            // 
+            this.buttonAddRegion.Location = new System.Drawing.Point(379, 10);
+            this.buttonAddRegion.Name = "buttonAddRegion";
+            this.buttonAddRegion.Size = new System.Drawing.Size(55, 23);
+            this.buttonAddRegion.TabIndex = 12;
+            this.buttonAddRegion.Text = "Add";
+            this.buttonAddRegion.UseVisualStyleBackColor = true;
+            this.buttonAddRegion.Click += new System.EventHandler(this.buttonAddRegion_Click);
+            // 
+            // comboBoxUserRegions
+            // 
+            this.comboBoxUserRegions.FormattingEnabled = true;
+            this.comboBoxUserRegions.Location = new System.Drawing.Point(379, 57);
+            this.comboBoxUserRegions.Name = "comboBoxUserRegions";
+            this.comboBoxUserRegions.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxUserRegions.TabIndex = 11;
+            // 
+            // LabelCurrentForecastLocation
+            // 
+            this.LabelCurrentForecastLocation.AutoSize = true;
+            this.LabelCurrentForecastLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCurrentForecastLocation.ForeColor = System.Drawing.Color.Blue;
+            this.LabelCurrentForecastLocation.Location = new System.Drawing.Point(73, 10);
+            this.LabelCurrentForecastLocation.Name = "LabelCurrentForecastLocation";
+            this.LabelCurrentForecastLocation.Size = new System.Drawing.Size(60, 15);
+            this.LabelCurrentForecastLocation.TabIndex = 15;
+            this.LabelCurrentForecastLocation.Text = "Forecast :";
+            // 
+            // LabelCurrentForecastCityValue
+            // 
+            this.LabelCurrentForecastCityValue.AutoSize = true;
+            this.LabelCurrentForecastCityValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCurrentForecastCityValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
+            this.LabelCurrentForecastCityValue.Location = new System.Drawing.Point(73, 25);
+            this.LabelCurrentForecastCityValue.Name = "LabelCurrentForecastCityValue";
+            this.LabelCurrentForecastCityValue.Size = new System.Drawing.Size(14, 15);
+            this.LabelCurrentForecastCityValue.TabIndex = 16;
+            this.LabelCurrentForecastCityValue.Text = "?";
+            // 
+            // LabelCurrentForecastRegionValue
+            // 
+            this.LabelCurrentForecastRegionValue.AutoSize = true;
+            this.LabelCurrentForecastRegionValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCurrentForecastRegionValue.ForeColor = System.Drawing.Color.Navy;
+            this.LabelCurrentForecastRegionValue.Location = new System.Drawing.Point(73, 40);
+            this.LabelCurrentForecastRegionValue.Name = "LabelCurrentForecastRegionValue";
+            this.LabelCurrentForecastRegionValue.Size = new System.Drawing.Size(14, 15);
+            this.LabelCurrentForecastRegionValue.TabIndex = 17;
+            this.LabelCurrentForecastRegionValue.Text = "?";
+            // 
+            // LabelCurrentForecastCountryValue
+            // 
+            this.LabelCurrentForecastCountryValue.AutoSize = true;
+            this.LabelCurrentForecastCountryValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelCurrentForecastCountryValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.LabelCurrentForecastCountryValue.Location = new System.Drawing.Point(73, 55);
+            this.LabelCurrentForecastCountryValue.Name = "LabelCurrentForecastCountryValue";
+            this.LabelCurrentForecastCountryValue.Size = new System.Drawing.Size(14, 15);
+            this.LabelCurrentForecastCountryValue.TabIndex = 18;
+            this.LabelCurrentForecastCountryValue.Text = "?";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(697, 383);
+            this.ClientSize = new System.Drawing.Size(697, 409);
             this.Controls.Add(this.SlotDay1);
             this.Controls.Add(this.SlotDay2);
             this.Controls.Add(this.SlotDay3);
@@ -852,6 +1069,24 @@
         private System.Windows.Forms.Label LabelDay3WindValue;
         private System.Windows.Forms.Label LabelDay3TempValue;
         private System.Windows.Forms.Label LabelDay3DateValue;
+        private System.Windows.Forms.Button buttonAddCity;
+        private System.Windows.Forms.ComboBox comboBoxUserCities;
+        private System.Windows.Forms.Button buttonDeleteCity;
+        private System.Windows.Forms.Button buttonGetForecast;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label LabelCurrentForecastCityValue;
+        private System.Windows.Forms.Label LabelCurrentForecastLocation;
+        private System.Windows.Forms.Label LabelRegionSearch;
+        private System.Windows.Forms.Button buttonDeleteRegion;
+        private System.Windows.Forms.Button buttonAddRegion;
+        private System.Windows.Forms.ComboBox comboBoxUserRegions;
+        private System.Windows.Forms.Label LabelCountrySearch;
+        private System.Windows.Forms.Button buttonDeleteCountry;
+        private System.Windows.Forms.Button buttonAddCountry;
+        private System.Windows.Forms.ComboBox comboBoxUserCountries;
+        private System.Windows.Forms.Label LabelCItySearh;
+        private System.Windows.Forms.Label LabelCurrentForecastCountryValue;
+        private System.Windows.Forms.Label LabelCurrentForecastRegionValue;
     }
 }
 
