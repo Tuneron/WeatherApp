@@ -46,5 +46,20 @@ namespace WeatherApp.Controllers
         {
             return databaseModel.GetCurrentLocation(city);
         }
+
+        public void SetDefaultLocation(string city, string region, string country)
+        {
+            databaseModel.SetDefaultLocation(city, region, country);
+        }
+
+        public string[] GetDefaultLocation()
+        {
+            return databaseModel.GetDefaultLocation();
+        }
+
+        public void SaveForecastCopy(string[] cities, string[] regions, string[] countries)
+        {
+            databaseModel.SaveUserCatalog(cities, regions, countries);
+        }
     }
 }

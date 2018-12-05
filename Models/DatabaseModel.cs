@@ -43,16 +43,6 @@ namespace WeatherApp.Models
             conncetion.Close();
         }
 
-        public void Auntefication(string login, string password)
-        {
-
-        }
-
-        public void AddUser(string login, string password, string defaultCity)
-        {
-
-        }
-
         public Current GetCurrentsWeather(string city)
         {
             return json.GetForecast(city).current;
@@ -68,5 +58,58 @@ namespace WeatherApp.Models
             return json.GetForecast(city).location;
         }
 
+        public void SetDefaultLocation(string city, string region, string country)
+        {
+            command.CommandText = "UPDATE DefaultLocation SET City = @city, Region = @region, Country = @country WHERE DefaultLocationId = 1;";
+            command.Parameters.AddWithValue("@city", city);
+            command.Parameters.AddWithValue("@region", region);
+            command.Parameters.AddWithValue("@country", country);
+            command.ExecuteNonQuery();
+        }
+
+        public string[] GetDefaultLocation()
+        {
+            string[] result = new string[3];
+
+            command.CommandText = "SELECT * FROM DefaultLocation";
+            reader = command.ExecuteReader();
+            reader.Read();
+
+            result[0] = reader["City"].ToString();
+            result[1] = reader["Region"].ToString();
+            result[2] = reader["Country"].ToString();
+
+            reader.Close();
+
+            return result;
+        }
+
+        public void SaveUserCatalog(string[] cities, string[] regions, string[] countries)
+        {
+            SaveCatalog("City", cities);
+            SaveCatalog("Region", regions);
+            SaveCatalog("Country", countries);
+        }
+
+        private void SaveCatalog(string tableName, string[] catalog)
+        {
+            command.CommandText = string.Format("TRUNCATE TABLE {0};", tableName);
+            command.ExecuteNonQuery();
+            for(int i = 0; i < catalog.Length; i++)
+            {
+                while (catalog[i].IndexOf("'") != -1)
+                {
+                    catalog[i] = catalog[i].Insert(catalog[i].IndexOf("'"), " ");
+                    catalog[i] = catalog[i].Remove(catalog[i].IndexOf("'"), 1);
+                }
+                command.CommandText = string.Format("INSERT INTO {0} (Name) VALUES ('{1}');", tableName, catalog[i]);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void SaveForecastCopy()
+        {
+
+        }
     }
 }

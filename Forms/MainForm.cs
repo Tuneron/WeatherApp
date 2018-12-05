@@ -26,7 +26,7 @@ namespace WeatherApp
         {
             InitializeComponent();
 
-            database = new DatabaseController("Data Source=.\\SQLEXPRESS01; Initial Catalog = BlogDatabase; Integrated Security = True; Pooling=False");
+            database = new DatabaseController("Data Source=.\\SQLEXPRESS01; Initial Catalog = WeatherApp; Integrated Security = True; Pooling=False");
 
             UpdateInternetConnectionStatus();
             UpdateDatabaseConnectionStatus();
@@ -34,11 +34,31 @@ namespace WeatherApp
             comboBoxUserCities.Items.Add("Odesa");
             comboBoxUserCities.Items.Add("Paris");
             comboBoxUserCities.Items.Add("Moscow");
-            comboBoxUserCities.Text = "Odesa";
 
+            database.StartConnection();
+            string[] defaultLocation = database.GetDefaultLocation();
+            database.CloseConnection();
+
+            comboBoxUserCities.Text = defaultLocation[0];
+            comboBoxUserRegions.Text = defaultLocation[1];
+            comboBoxUserCountries.Text = defaultLocation[2];
+            
             UpdateCurrentWeather(GetForecastRequest());
             UpdateForecastWeek(GetForecastRequest());
             UpdateCurrentForecastLocation(GetForecastRequest());
+
+            foreach (System.Windows.Forms.Control item in this.SlotDay1.Controls)
+                item.Click += new System.EventHandler(SlotDay1_Click);
+            foreach (System.Windows.Forms.Control item in this.SlotDay2.Controls)
+                item.Click += new System.EventHandler(SlotDay2_Click);
+            foreach (System.Windows.Forms.Control item in this.SlotDay3.Controls)
+                item.Click += new System.EventHandler(SlotDay3_Click);
+            foreach (System.Windows.Forms.Control item in this.SlotDay4.Controls)
+                item.Click += new System.EventHandler(SlotDay4_Click);
+            foreach (System.Windows.Forms.Control item in this.SlotDay5.Controls)
+                item.Click += new System.EventHandler(SlotDay5_Click);
+            foreach (System.Windows.Forms.Control item in this.SlotDay6.Controls)
+                item.Click += new System.EventHandler(SlotDay6_Click);
         }
 
         private string GetForecastRequest()
@@ -76,13 +96,51 @@ namespace WeatherApp
 
         private void UpdateCurrentWeather(string city)
         {
+            TodayForecast.Text = "Current";
+
             TodayForecastPicture.Load("http:" + database.GetCurrentWeather(city).condition.icon);
             LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
             LabelCurrentTempValue.Text = database.GetCurrentWeather(city).temp_c + " ℃";
             LabelCurrentWindValue.Text = database.GetCurrentWeather(city).wind_kph.ToString() + " km/h";
+
+            LabelCurrentWindDir.Visible = true;
+            LabelCurrentWindDirValue.Visible = true;
+
             LabelCurrentWindDirValue.Text = database.GetCurrentWeather(city).wind_dir;
+
+            LabelCurrentHymidity.Location = new Point(LabelCurrentWindDir.Location.X, LabelCurrentWindDir.Location.Y + 29);
+            LabelCurrentHymidityValue.Location = new Point(LabelCurrentWindDirValue.Location.X, LabelCurrentWindDirValue.Location.Y + 29);
+
             LabelCurrentHymidityValue.Text = database.GetCurrentWeather(city).humidity.ToString() + "%";
+
+            LabelCurrentPressure.Visible = true;
+            LabelCurrentPressureValue.Visible = true;
+
             LabelCurrentPressureValue.Text = database.GetCurrentWeather(city).pressure_in.ToString() + " mrb";
+        }
+
+        private void UpdateCurrentWeather(string city, int day)
+        {
+            TodayForecast.Text = database.GetWeekForecast(city)[day].date;
+
+            TodayForecastPicture.Load("http:" + database.GetWeekForecast(city)[day].day.condition.icon);
+            LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
+            LabelCurrentTempValue.Text = 
+                database.GetWeekForecast(city)[day].day.mintemp_c + " ... " +
+                database.GetWeekForecast(city)[day].day.maxtemp_c + " ℃";
+
+            LabelCurrentWindValue.Text = database.GetWeekForecast(city)[day].day.avgvis_km.ToString() + " km/h";
+
+            LabelCurrentWindDir.Visible = false;
+            LabelCurrentWindDirValue.Visible = false;
+
+            LabelCurrentHymidity.Location = LabelCurrentWindDir.Location;
+            LabelCurrentHymidityValue.Location = LabelCurrentWindDirValue.Location;
+
+            LabelCurrentHymidityValue.Text = database.GetWeekForecast(city)[day].day.avghumidity.ToString() + "%";
+
+            LabelCurrentPressure.Visible = false;
+            LabelCurrentPressureValue.Visible = false;
         }
 
         private void UpdateForecastDay(int dayCount, string date, Models.Json.Day day)
@@ -153,6 +211,83 @@ namespace WeatherApp
         {
             comboBoxUserRegions.Items.Remove(comboBoxUserRegions.SelectedItem);
             comboBoxUserRegions.Refresh();
+        }
+
+        private void buttonSetCurrentWeather_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest());
+        }
+
+        private void SlotDay1_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 1);
+        }
+
+        private void SlotDay2_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 2);
+        }
+
+        private void SlotDay3_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 3);
+        }
+
+        private void SlotDay4_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 4);
+        }
+
+        private void SlotDay5_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 5);
+        }
+
+        private void SlotDay6_Click(object sender, EventArgs e)
+        {
+            UpdateCurrentWeather(GetForecastRequest(), 6);
+        }
+
+        private void buttonSetDefaultLocation_Click(object sender, EventArgs e)
+        {
+            database.StartConnection();
+            database.SetDefaultLocation(
+                database.GetCurrentLocation(GetForecastRequest()).name,
+                database.GetCurrentLocation(GetForecastRequest()).region,
+                database.GetCurrentLocation(GetForecastRequest()).country
+                );
+            database.CloseConnection();
+        }
+
+        public void SetCityUserCatalog()
+        {
+            database.StartConnection();
+
+            database.CloseConnection();
+        }
+
+        public void buttonSaveForecastCopy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            database.StartConnection();
+            database.SaveForecastCopy(
+                GetCatalogItems(comboBoxUserCities),
+                GetCatalogItems(comboBoxUserRegions),
+                GetCatalogItems(comboBoxUserCountries)
+                );
+            database.CloseConnection();
+        }
+
+        private string[] GetCatalogItems(ComboBox comboBox)
+        {
+            string[] items = new string[comboBox.Items.Count];
+            for(int i = 0; i < comboBox.Items.Count; i++)
+                items[i] = comboBox.Items[i].ToString();
+            return items;
         }
     }
 }
