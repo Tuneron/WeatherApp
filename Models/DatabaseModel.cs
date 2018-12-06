@@ -84,7 +84,24 @@ namespace WeatherApp.Models
             return result;
         }
 
-        public void SaveUserCatalog(string[] cities, string[] regions, string[] countries)
+        public List<string> LoadUserCatalog(string catalogName)
+        {
+            List<string> result = new List<string>();
+
+            command.CommandText = string.Format("SELECT * FROM {0}", catalogName);
+            reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                result.Add(reader["Name"].ToString());
+            }
+
+            reader.Close();
+
+            return result;
+        }
+
+        public void SaveUserCatalogs(string[] cities, string[] regions, string[] countries)
         {
             SaveCatalog("City", cities);
             SaveCatalog("Region", regions);

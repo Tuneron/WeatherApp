@@ -57,9 +57,14 @@ namespace WeatherApp.Controllers
             return databaseModel.GetDefaultLocation();
         }
 
-        public void SaveForecastCopy(string[] cities, string[] regions, string[] countries)
+        public void SaveUsersCatalogs(string[] cities, string[] regions, string[] countries)
         {
-            databaseModel.SaveUserCatalog(cities, regions, countries);
+            databaseModel.SaveUserCatalogs(cities, regions, countries);
+        }
+
+        public List<string> LoadUserCatalog(string catalogName)
+        {
+            return databaseModel.LoadUserCatalog(catalogName);
         }
     }
 }

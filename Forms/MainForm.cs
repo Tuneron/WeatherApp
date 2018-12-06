@@ -31,14 +31,11 @@ namespace WeatherApp
             UpdateInternetConnectionStatus();
             UpdateDatabaseConnectionStatus();
 
-            comboBoxUserCities.Items.Add("Odesa");
-            comboBoxUserCities.Items.Add("Paris");
-            comboBoxUserCities.Items.Add("Moscow");
-
             database.StartConnection();
             string[] defaultLocation = database.GetDefaultLocation();
             database.CloseConnection();
 
+            LoadUserCatalogs();
             comboBoxUserCities.Text = defaultLocation[0];
             comboBoxUserRegions.Text = defaultLocation[1];
             comboBoxUserCountries.Text = defaultLocation[2];
@@ -259,10 +256,21 @@ namespace WeatherApp
             database.CloseConnection();
         }
 
-        public void SetCityUserCatalog()
+        private void LoadUserCatalogs()
         {
             database.StartConnection();
-
+            foreach (string item in database.LoadUserCatalog("City"))
+            {
+                comboBoxUserCities.Items.Add(item);
+            }
+            foreach (string item in database.LoadUserCatalog("Region"))
+            {
+                comboBoxUserRegions.Items.Add(item);
+            }
+            foreach (string item in database.LoadUserCatalog("Country"))
+            {
+                comboBoxUserCountries.Items.Add(item);
+            }
             database.CloseConnection();
         }
 
@@ -274,7 +282,7 @@ namespace WeatherApp
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             database.StartConnection();
-            database.SaveForecastCopy(
+            database.SaveUsersCatalogs(
                 GetCatalogItems(comboBoxUserCities),
                 GetCatalogItems(comboBoxUserRegions),
                 GetCatalogItems(comboBoxUserCountries)
