@@ -17,7 +17,7 @@ namespace WeatherApp
     {
         DatabaseController database;
 
-        enum Days
+        public enum Days
         {
             week = 7
         }
@@ -31,9 +31,7 @@ namespace WeatherApp
             UpdateInternetConnectionStatus();
             UpdateDatabaseConnectionStatus();
 
-            database.StartConnection();
             string[] defaultLocation = database.GetDefaultLocation();
-            database.CloseConnection();
 
             LoadUserCatalogs();
             comboBoxUserCities.Text = defaultLocation[0];
@@ -247,18 +245,15 @@ namespace WeatherApp
 
         private void buttonSetDefaultLocation_Click(object sender, EventArgs e)
         {
-            database.StartConnection();
             database.SetDefaultLocation(
                 database.GetCurrentLocation(GetForecastRequest()).name,
                 database.GetCurrentLocation(GetForecastRequest()).region,
                 database.GetCurrentLocation(GetForecastRequest()).country
                 );
-            database.CloseConnection();
         }
 
         private void LoadUserCatalogs()
         {
-            database.StartConnection();
             foreach (string item in database.LoadUserCatalog("City"))
             {
                 comboBoxUserCities.Items.Add(item);
@@ -270,24 +265,21 @@ namespace WeatherApp
             foreach (string item in database.LoadUserCatalog("Country"))
             {
                 comboBoxUserCountries.Items.Add(item);
-            }
-            database.CloseConnection();
+            } 
         }
 
         public void buttonSaveForecastCopy_Click(object sender, EventArgs e)
         {
-
+            database.SaveForecast(GetForecastRequest());
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            database.StartConnection();
+        {   
             database.SaveUsersCatalogs(
                 GetCatalogItems(comboBoxUserCities),
                 GetCatalogItems(comboBoxUserRegions),
                 GetCatalogItems(comboBoxUserCountries)
                 );
-            database.CloseConnection();
         }
 
         private string[] GetCatalogItems(ComboBox comboBox)

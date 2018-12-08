@@ -11,23 +11,30 @@ namespace WeatherApp.Models
 {
     class DatabaseModel
     {
-        private SqlConnection conncetion;
+        private SqlConnection connection;
         private SqlCommand command;
         private SqlDataReader reader;
         private JsonParserController json;
 
         public DatabaseModel(string connectionString)
         {
-            conncetion = new SqlConnection();
-            conncetion.ConnectionString = connectionString;
+            connection = new SqlConnection();
+            connection.ConnectionString = connectionString;
             command = new SqlCommand();
-            command.Connection = conncetion;
+            command.Connection = connection;
             json = new JsonParserController();
+        }
+
+        private void ResetCommand()
+        {
+            command.Dispose();
+            command = new SqlCommand();
+            command.Connection = connection;
         }
 
         public bool CheckConnection()
         {
-            if (conncetion != null)
+            if (connection != null)
                 return true;
             else
                 return false;
@@ -35,12 +42,12 @@ namespace WeatherApp.Models
 
         public void StartConnection()
         {
-            conncetion.Open();
+            connection.Open();
         }
 
         public void CloseConnection()
         {
-            conncetion.Close();
+            connection.Close();
         }
 
         public Current GetCurrentsWeather(string city)
@@ -60,6 +67,8 @@ namespace WeatherApp.Models
 
         public void SetDefaultLocation(string city, string region, string country)
         {
+            ResetCommand();
+
             command.CommandText = "UPDATE DefaultLocation SET City = @city, Region = @region, Country = @country WHERE DefaultLocationId = 1;";
             command.Parameters.AddWithValue("@city", city);
             command.Parameters.AddWithValue("@region", region);
@@ -70,6 +79,8 @@ namespace WeatherApp.Models
         public string[] GetDefaultLocation()
         {
             string[] result = new string[3];
+
+            ResetCommand();
 
             command.CommandText = "SELECT * FROM DefaultLocation";
             reader = command.ExecuteReader();
@@ -88,6 +99,8 @@ namespace WeatherApp.Models
         {
             List<string> result = new List<string>();
 
+            ResetCommand();
+
             command.CommandText = string.Format("SELECT * FROM {0}", catalogName);
             reader = command.ExecuteReader();
 
@@ -101,6 +114,17 @@ namespace WeatherApp.Models
             return result;
         }
 
+        private string ValidateValue(string value)
+        {
+            while (value.IndexOf("'") != -1)
+            {
+                value = value.Insert(value.IndexOf("'"), " ");
+                value = value.Remove(value.IndexOf("'"), 1);
+            }
+
+            return value;
+        }
+
         public void SaveUserCatalogs(string[] cities, string[] regions, string[] countries)
         {
             SaveCatalog("City", cities);
@@ -110,23 +134,71 @@ namespace WeatherApp.Models
 
         private void SaveCatalog(string tableName, string[] catalog)
         {
+            ResetCommand();
+
             command.CommandText = string.Format("TRUNCATE TABLE {0};", tableName);
             command.ExecuteNonQuery();
             for(int i = 0; i < catalog.Length; i++)
             {
-                while (catalog[i].IndexOf("'") != -1)
-                {
-                    catalog[i] = catalog[i].Insert(catalog[i].IndexOf("'"), " ");
-                    catalog[i] = catalog[i].Remove(catalog[i].IndexOf("'"), 1);
-                }
-                command.CommandText = string.Format("INSERT INTO {0} (Name) VALUES ('{1}');", tableName, catalog[i]);
+                ResetCommand();
+                command.CommandText = string.Format("INSERT INTO {0} (Name) VALUES ('{1}');", tableName, ValidateValue(catalog[i]));
                 command.ExecuteNonQuery();
             }
         }
 
-        public void SaveForecastCopy()
+        public void SaveForecastCopy(string day)
         {
+            for (int i = 0; i < (int)MainForm.Days.week; i++)
+            {
+                ResetCommand();
+                SaveDay(day, i);
+            }
+        }
+        private void SaveDay(string city, int day)
+        {
+            int forecastId = 0;
+            forecastId = SaveForecast(city, day);
 
+            command.CommandText = string.Format("INSERT INTO ForecastDay (City, Region, Country, Forecast) " +
+            "VALUES (@city, @region, @country, @forecast);");
+
+            command.Parameters.AddWithValue("@city", json.GetForecast(city).location.name);
+            command.Parameters.AddWithValue("@region", json.GetForecast(city).location.region);
+            command.Parameters.AddWithValue("@country", json.GetForecast(city).location.country);
+            command.Parameters.AddWithValue("@forecast", forecastId);
+
+            command.ExecuteNonQuery();
+        }
+
+        private int SaveForecast(string city, int day)
+        {
+            command.CommandText = string.Format("INSERT INTO Forecast (Date, LastUpdate, Icon, MinTemp, MaxTemp, Wind, Humidity, Pressure)" +
+                "VALUES (@date, @lastUpdate, @icon, @minTemp, @maxTemp, @wind, @hymidity, @pressure);");
+
+            command.Parameters.AddWithValue("@date", json.GetForecast(city).forecast.forecastday[day].date);
+            command.Parameters.AddWithValue("@lastUpdate", json.GetForecast(city).current.last_updated);
+            command.Parameters.AddWithValue("@icon", "http:" + json.GetForecast(city).forecast.forecastday[day].day.condition.icon);
+            command.Parameters.AddWithValue("@minTemp", json.GetForecast(city).forecast.forecastday[day].day.mintemp_c);
+            command.Parameters.AddWithValue("@maxTemp", json.GetForecast(city).forecast.forecastday[day].day.maxtemp_c);
+            command.Parameters.AddWithValue("@wind", json.GetForecast(city).forecast.forecastday[day].day.avgvis_km);
+            command.Parameters.AddWithValue("@hymidity", json.GetForecast(city).forecast.forecastday[day].day.avghumidity);
+            command.Parameters.AddWithValue("@pressure", json.GetForecast(city).forecast.forecastday[day].day.totalprecip_in);
+
+            command.ExecuteNonQuery();
+
+            try
+            {
+                command.CommandText = string.Format("SELECT @@IDENTITY AS [LastId] FROM Forecast");
+                reader = command.ExecuteReader();
+                reader.Read();
+                int result = int.Parse(reader["LastId"].ToString());
+
+                return  result;
+            }
+            finally
+            {
+                reader.Close();
+            }   
         }
     }
 }

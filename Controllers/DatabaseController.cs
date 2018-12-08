@@ -17,16 +17,6 @@ namespace WeatherApp.Controllers
             databaseModel = new DatabaseModel(connect);
         }
 
-        public void StartConnection()
-        {
-            databaseModel.StartConnection();
-        }
-
-        public void CloseConnection()
-        {
-            databaseModel.CloseConnection();
-        }
-
         public bool CheckDatabaseConnect()
         {
             return databaseModel != null ? true : false;
@@ -34,37 +24,106 @@ namespace WeatherApp.Controllers
 
         public Current GetCurrentWeather(string city)
         {
-            return databaseModel.GetCurrentsWeather(city);
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetCurrentsWeather(city);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public List<Forecastday> GetWeekForecast(string city)
         {
-            return databaseModel.GetWeekWeather(city).forecastday;
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetWeekWeather(city).forecastday;
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public Location GetCurrentLocation(string city)
         {
-            return databaseModel.GetCurrentLocation(city);
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetCurrentLocation(city);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public void SetDefaultLocation(string city, string region, string country)
         {
-            databaseModel.SetDefaultLocation(city, region, country);
+            databaseModel.StartConnection();
+            try
+            {
+                databaseModel.SetDefaultLocation(city, region, country);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public string[] GetDefaultLocation()
         {
-            return databaseModel.GetDefaultLocation();
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetDefaultLocation();
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public void SaveUsersCatalogs(string[] cities, string[] regions, string[] countries)
         {
-            databaseModel.SaveUserCatalogs(cities, regions, countries);
+            databaseModel.StartConnection();
+            try
+            {
+                databaseModel.SaveUserCatalogs(cities, regions, countries);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
 
         public List<string> LoadUserCatalog(string catalogName)
         {
-            return databaseModel.LoadUserCatalog(catalogName);
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.LoadUserCatalog(catalogName);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
+        }
+
+        public void SaveForecast(string city)
+        {
+            databaseModel.StartConnection();
+            try
+            {
+                databaseModel.SaveForecastCopy(city);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
         }
     }
 }
