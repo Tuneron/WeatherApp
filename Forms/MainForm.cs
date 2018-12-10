@@ -15,16 +15,22 @@ namespace WeatherApp
 {
     public partial class MainForm : Form
     {
-        DatabaseController database;
+        private DatabaseController database;
+
+        private bool OnlineMode;
+        private int startId;
 
         public enum Days
         {
             week = 7
         }
 
-        public MainForm()
+        public MainForm(bool mode, int startId)
         {
             InitializeComponent();
+
+            OnlineMode = mode;
+            this.startId = startId;
 
             database = new DatabaseController("Data Source=.\\SQLEXPRESS01; Initial Catalog = WeatherApp; Integrated Security = True; Pooling=False");
 
@@ -33,11 +39,20 @@ namespace WeatherApp
 
             string[] defaultLocation = database.GetDefaultLocation();
 
-            LoadUserCatalogs();
-            comboBoxUserCities.Text = defaultLocation[0];
-            comboBoxUserRegions.Text = defaultLocation[1];
-            comboBoxUserCountries.Text = defaultLocation[2];
-            
+            if (OnlineMode)
+            {
+                LoadUserCatalogs();
+                comboBoxUserCities.Text = defaultLocation[0];
+                comboBoxUserRegions.Text = defaultLocation[1];
+                comboBoxUserCountries.Text = defaultLocation[2];
+            }
+            else
+            {
+                comboBoxUserCities.Text = database.GetOfflineLocation("City", startId);
+                comboBoxUserRegions.Text = database.GetOfflineLocation("Region", startId);
+                comboBoxUserCountries.Text = database.GetOfflineLocation("Country", startId);
+            }
+
             UpdateCurrentWeather(GetForecastRequest());
             UpdateForecastWeek(GetForecastRequest());
             UpdateCurrentForecastLocation(GetForecastRequest());
@@ -91,51 +106,106 @@ namespace WeatherApp
 
         private void UpdateCurrentWeather(string city)
         {
-            TodayForecast.Text = "Current";
+            if (OnlineMode)
+            {
+                TodayForecast.Text = "Current";
 
-            TodayForecastPicture.Load("http:" + database.GetCurrentWeather(city).condition.icon);
-            LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
-            LabelCurrentTempValue.Text = database.GetCurrentWeather(city).temp_c + " ℃";
-            LabelCurrentWindValue.Text = database.GetCurrentWeather(city).wind_kph.ToString() + " km/h";
+                TodayForecastPicture.Load("http:" + database.GetCurrentWeather(city).condition.icon);
+                LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
+                LabelCurrentTempValue.Text = database.GetCurrentWeather(city).temp_c + " ℃";
+                LabelCurrentWindValue.Text = database.GetCurrentWeather(city).wind_kph.ToString() + " km/h";
 
-            LabelCurrentWindDir.Visible = true;
-            LabelCurrentWindDirValue.Visible = true;
+                LabelCurrentWindDir.Visible = true;
+                LabelCurrentWindDirValue.Visible = true;
 
-            LabelCurrentWindDirValue.Text = database.GetCurrentWeather(city).wind_dir;
+                LabelCurrentWindDirValue.Text = database.GetCurrentWeather(city).wind_dir;
 
-            LabelCurrentHymidity.Location = new Point(LabelCurrentWindDir.Location.X, LabelCurrentWindDir.Location.Y + 29);
-            LabelCurrentHymidityValue.Location = new Point(LabelCurrentWindDirValue.Location.X, LabelCurrentWindDirValue.Location.Y + 29);
+                LabelCurrentHymidity.Location = new Point(LabelCurrentWindDir.Location.X, LabelCurrentWindDir.Location.Y + 29);
+                LabelCurrentHymidityValue.Location = new Point(LabelCurrentWindDirValue.Location.X, LabelCurrentWindDirValue.Location.Y + 29);
 
-            LabelCurrentHymidityValue.Text = database.GetCurrentWeather(city).humidity.ToString() + "%";
+                LabelCurrentHymidityValue.Text = database.GetCurrentWeather(city).humidity.ToString() + "%";
 
-            LabelCurrentPressure.Visible = true;
-            LabelCurrentPressureValue.Visible = true;
+                LabelCurrentPressure.Visible = true;
+                LabelCurrentPressureValue.Visible = true;
 
-            LabelCurrentPressureValue.Text = database.GetCurrentWeather(city).pressure_in.ToString() + " mrb";
+                LabelCurrentPressureValue.Text = database.GetCurrentWeather(city).pressure_in.ToString() + " mrb";
+            }
+            else
+            {
+                TodayForecast.Text = database.GetSavedValue("Date", GetStartSavedId());
+
+                TodayForecastPicture.Load(database.GetSavedValue("Icon", GetStartSavedId()));
+                LabelCurrentUpdateValue.Text = database.GetSavedValue("LastUpdate", GetStartSavedId()).Remove(0,5);
+                LabelCurrentTempValue.Text = database.GetSavedValue("MinTemp", GetStartSavedId()) +
+                    " - " + database.GetSavedValue("MaxTemp", GetStartSavedId()) + " ℃";
+                LabelCurrentWindValue.Text = database.GetSavedValue("Wind", GetStartSavedId()) + " km/h";
+
+                LabelCurrentWindDir.Visible = false;
+                LabelCurrentWindDirValue.Visible = false;
+
+                LabelCurrentHymidity.Location = new Point(LabelCurrentWindDir.Location.X, LabelCurrentWindDir.Location.Y);
+                LabelCurrentHymidityValue.Location = new Point(LabelCurrentWindDirValue.Location.X, LabelCurrentWindDirValue.Location.Y);
+
+                LabelCurrentHymidityValue.Text = database.GetSavedValue("Humidity", GetStartSavedId()) + "%";
+
+                LabelCurrentPressure.Visible = true;
+                LabelCurrentPressureValue.Visible = true;
+
+                LabelCurrentPressure.Location = new Point(LabelCurrentHymidity.Location.X, LabelCurrentHymidity.Location.Y + 29);
+                LabelCurrentPressureValue.Location = new Point(LabelCurrentHymidityValue.Location.X, LabelCurrentHymidityValue.Location.Y + 29);
+
+                LabelCurrentPressureValue.Text = database.GetSavedValue("Pressure", GetStartSavedId()) + " mrb";
+            }
         }
 
         private void UpdateCurrentWeather(string city, int day)
         {
-            TodayForecast.Text = database.GetWeekForecast(city)[day].date;
+            if (OnlineMode)
+            {
+                TodayForecast.Text = database.GetWeekForecast(city)[day].date;
 
-            TodayForecastPicture.Load("http:" + database.GetWeekForecast(city)[day].day.condition.icon);
-            LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
-            LabelCurrentTempValue.Text = 
-                database.GetWeekForecast(city)[day].day.mintemp_c + " ... " +
-                database.GetWeekForecast(city)[day].day.maxtemp_c + " ℃";
+                TodayForecastPicture.Load("http:" + database.GetWeekForecast(city)[day].day.condition.icon);
+                LabelCurrentUpdateValue.Text = database.GetCurrentWeather(city).last_updated.Remove(0, 11);
+                LabelCurrentTempValue.Text =
+                    database.GetWeekForecast(city)[day].day.mintemp_c + " ... " +
+                    database.GetWeekForecast(city)[day].day.maxtemp_c + " ℃";
 
-            LabelCurrentWindValue.Text = database.GetWeekForecast(city)[day].day.avgvis_km.ToString() + " km/h";
+                LabelCurrentWindValue.Text = database.GetWeekForecast(city)[day].day.avgvis_km.ToString() + " km/h";
 
-            LabelCurrentWindDir.Visible = false;
-            LabelCurrentWindDirValue.Visible = false;
+                LabelCurrentWindDir.Visible = false;
+                LabelCurrentWindDirValue.Visible = false;
 
-            LabelCurrentHymidity.Location = LabelCurrentWindDir.Location;
-            LabelCurrentHymidityValue.Location = LabelCurrentWindDirValue.Location;
+                LabelCurrentHymidity.Location = LabelCurrentWindDir.Location;
+                LabelCurrentHymidityValue.Location = LabelCurrentWindDirValue.Location;
 
-            LabelCurrentHymidityValue.Text = database.GetWeekForecast(city)[day].day.avghumidity.ToString() + "%";
+                LabelCurrentHymidityValue.Text = database.GetWeekForecast(city)[day].day.avghumidity.ToString() + "%";
 
-            LabelCurrentPressure.Visible = false;
-            LabelCurrentPressureValue.Visible = false;
+                LabelCurrentPressure.Visible = false;
+                LabelCurrentPressureValue.Visible = false;
+            }
+            else
+            {
+                TodayForecast.Text = database.GetSavedValue("Date", GetStartSavedId() + day);
+
+                TodayForecastPicture.Load(database.GetSavedValue("Icon", GetStartSavedId() + day));
+                LabelCurrentUpdateValue.Text = database.GetSavedValue("LastUpdate", GetStartSavedId() + day).Remove(0, 5);
+                LabelCurrentTempValue.Text =
+                    database.GetSavedValue("MinTemp", GetStartSavedId() + day) + " ... " +
+                    database.GetSavedValue("MaxTemp", GetStartSavedId() + day) + " ℃";
+
+                LabelCurrentWindValue.Text = database.GetSavedValue("Wind", GetStartSavedId() + day) + " km/h";
+
+                LabelCurrentWindDir.Visible = false;
+                LabelCurrentWindDirValue.Visible = false;
+
+                LabelCurrentHymidity.Location = LabelCurrentWindDir.Location;
+                LabelCurrentHymidityValue.Location = LabelCurrentWindDirValue.Location;
+
+                LabelCurrentHymidityValue.Text = database.GetSavedValue("Humidity", GetStartSavedId() + day) + "%";
+
+                LabelCurrentPressure.Visible = false;
+                LabelCurrentPressureValue.Visible = false;
+            }
         }
 
         private void UpdateForecastDay(int dayCount, string date, Models.Json.Day day)
@@ -148,28 +218,59 @@ namespace WeatherApp
             ((PictureBox)c[dayCount].Controls[3]).Load("http:" + day.condition.icon);
         }
 
+        private void UpdateForecastDay(int dayCount)
+        {
+            List<Control> c = Controls.OfType<GroupBox>().Cast<Control>().ToList();
+
+            ((Label)c[dayCount].Controls[0]).Text = database.GetSavedValue("Date", dayCount + GetStartSavedId() + 1);
+            ((Label)c[dayCount].Controls[1]).Text = database.GetSavedValue("MinTemp", dayCount + GetStartSavedId() + 1) + " - " +
+               database.GetSavedValue("MaxTemp", dayCount + GetStartSavedId() + 1) + " ℃";
+            ((Label)c[dayCount].Controls[2]).Text = database.GetSavedValue("Wind", dayCount + GetStartSavedId() + 1) + " km/h";
+            ((PictureBox)c[dayCount].Controls[3]).Load(database.GetSavedValue("Icon", dayCount + GetStartSavedId() + 1));
+        }
+
         private void UpdateForecastWeek(string city)
         {
             for(int i = 1; i < (int)Days.week; i++)
             {
+                if (OnlineMode)
+                {
                     UpdateForecastDay(i - 1, database.GetWeekForecast(city)[i].date,
                         database.GetWeekForecast(city)[i].day);
+                }
+                else
+                {
+                    UpdateForecastDay(i - 1);
+                }
             }
         }
 
         private void UpdateCurrentForecastLocation(string city)
         {
-            LabelCurrentForecastCityValue.Text = database.GetCurrentLocation(city).name;
-            LabelCurrentForecastRegionValue.Text = database.GetCurrentLocation(city).region;
-            LabelCurrentForecastCountryValue.Text = database.GetCurrentLocation(city).country;
+            if (OnlineMode)
+            {
+                LabelCurrentForecastCityValue.Text = database.GetCurrentLocation(city).name;
+                LabelCurrentForecastRegionValue.Text = database.GetCurrentLocation(city).region;
+                LabelCurrentForecastCountryValue.Text = database.GetCurrentLocation(city).country;
+            }
+            else
+            {
+                LabelCurrentForecastCityValue.Text = database.GetOfflineLocation("City", startId);
+                LabelCurrentForecastRegionValue.Text = database.GetOfflineLocation("Region", startId);
+                LabelCurrentForecastCountryValue.Text = database.GetOfflineLocation("Country", startId);
+
+            }
         }
 
         private void buttonGetForecast_Click(object sender, EventArgs e)
         {
-            UpdateCurrentWeather(GetForecastRequest());
-            UpdateForecastWeek(GetForecastRequest());
-            UpdateCurrentForecastLocation(GetForecastRequest());
-            this.Refresh();
+            if (OnlineMode)
+            {
+                UpdateCurrentWeather(GetForecastRequest());
+                UpdateForecastWeek(GetForecastRequest());
+                UpdateCurrentForecastLocation(GetForecastRequest());
+                this.Refresh();
+            }
         }
 
         private void buttonAddCity_Click(object sender, EventArgs e)
@@ -280,6 +381,11 @@ namespace WeatherApp
                 GetCatalogItems(comboBoxUserRegions),
                 GetCatalogItems(comboBoxUserCountries)
                 );
+
+            if (!OnlineMode)
+            {
+                Application.Exit();
+            }
         }
 
         private string[] GetCatalogItems(ComboBox comboBox)
@@ -288,6 +394,16 @@ namespace WeatherApp
             for(int i = 0; i < comboBox.Items.Count; i++)
                 items[i] = comboBox.Items[i].ToString();
             return items;
+        }
+
+        private int GetStartSavedId()
+        {
+            return GetEndSavedId() - 6;
+        }
+
+        private int GetEndSavedId()
+        {
+            return startId * 7;
         }
     }
 }

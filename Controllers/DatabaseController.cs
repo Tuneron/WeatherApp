@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Models.Json;
+using System.Windows.Forms;
 
 namespace WeatherApp.Controllers
 {
@@ -118,7 +119,59 @@ namespace WeatherApp.Controllers
             databaseModel.StartConnection();
             try
             {
-                databaseModel.SaveForecastCopy(city);
+                databaseModel.SaveWeekForecast(city);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
+        }
+
+        public string[] GetSavedLocations()
+        {
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetSavedLocations();
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
+        }
+
+        public string GetTimeInterval(int id)
+        {
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetTimeInterval(id);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
+        }
+        
+        public string GetSavedValue(string value, int id)
+        {
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetSavedValue(value, id);
+            }
+            finally
+            {
+                databaseModel.CloseConnection();
+            }
+        }
+
+        public string GetOfflineLocation(string value, int id)
+        {
+            databaseModel.StartConnection();
+            try
+            {
+                return databaseModel.GetOfflineLocation(value, id);
             }
             finally
             {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeatherApp.Controllers;
 using System.Net;
+using WeatherApp.Forms;
 
 namespace WeatherApp
 {
@@ -36,7 +37,13 @@ namespace WeatherApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+
+            if (!CheckForInternetConnection())
+                Application.Run(new MainForm(true, 0));
+            else
+            {
+                Application.Run(new ForecastSelect());
+            }
         }
     }
 }
